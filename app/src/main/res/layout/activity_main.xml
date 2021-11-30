@@ -63,8 +63,9 @@
                     android:drawableStart="@drawable/ic_search_primary_light"
                     android:drawablePadding="10dp"/>
             </androidx.cardview.widget.CardView>
-            <androidx.recyclerview.widget.RecyclerView
 
+
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewPagerHeaderRecyclerview"
                 android:foregroundGravity="center"
                 android:overScrollMode="never"
@@ -73,6 +74,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="150dp" />
+
 
 
             <include android:id="@+id/shimmerMeal"

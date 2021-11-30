@@ -15,7 +15,7 @@ data class Meals(
         @SerializedName("idMeal")
         private val idMeal: String? = null,
         @SerializedName("strMeal")
-        private val strMeal: String? = null,
+        private val strMeal: String,
 
         @SerializedName("strDescription")
         private val strDescription: String? = null,
@@ -29,7 +29,7 @@ data class Meals(
 
 
 
-        fun getstrMeal(): String? {
+        fun getstrMeal(): String {
             return strMeal
         }
 
