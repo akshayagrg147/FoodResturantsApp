@@ -29,6 +29,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+       // supportActionBar?.hide()
+
+
         initRecyclerview()
       //  initRecyclerviewMeals()
 
@@ -118,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     private fun initRecyclerview() {
-        categoryAdapter= CategoryAdapter(ArrayList())
+        categoryAdapter= CategoryAdapter(ArrayList(),this)
         binding.recyclerCategory.apply {
             setHasFixedSize(true)
             layoutManager=GridLayoutManager(this@MainActivity, 3)
