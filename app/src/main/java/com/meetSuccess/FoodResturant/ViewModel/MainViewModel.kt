@@ -42,4 +42,5 @@ constructor(private val mainRepository: MainRepository) : ViewModel() {
                 postStateFlow.value=ApiState.SuccessMeals(data)
             }
     }
+
 }

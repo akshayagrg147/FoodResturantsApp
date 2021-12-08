@@ -1,19 +1,22 @@
 package com.meetSuccess.FoodResturant
 
-import androidx.appcompat.app.AppCompatActivity
+//import com.meetSuccess.Database.CartItems
+//import com.meetSuccess.Database.ProductDatabase
+
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-//import com.meetSuccess.Database.CartItems
-//import com.meetSuccess.Database.ProductDatabase
-
+import com.meetSuccess.Database.CartItems
+import com.meetSuccess.Database.ProductDatabase
 import com.meetSuccess.FoodResturant.Adapter.ListItemsAfterCategorySelectionAdapter
 import com.meetSuccess.FoodResturant.Model.Categories
 import com.meetSuccess.FoodResturant.Util.ApiState
@@ -22,16 +25,16 @@ import com.meetSuccess.FoodResturant.databinding.ActivityListItemAfterCategorySe
 import com.rowland.cartcounter.view.CartCounterActionView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
+
 @AndroidEntryPoint
 class AfterCategorySelectionActivity :  AppCompatActivity() {
     private lateinit var binding: ActivityListItemAfterCategorySelectionBinding
-    //lateinit var database: ProductDatabase
+    lateinit var database: ProductDatabase
 
     private lateinit var categorySelectAdapter: ListItemsAfterCategorySelectionAdapter
     private  lateinit var actionView:CartCounterActionView
@@ -43,7 +46,14 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityListItemAfterCategorySelectionBinding.inflate(layoutInflater)
         setContentView(binding.root)
-      //  database= ProductDatabase.getContactDatabase(this@AfterCategorySelectionActivity)
+        database= ProductDatabase.getInstance(this@AfterCategorySelectionActivity)
+        val actionBar: ActionBar? = supportActionBar
+
+        // showing the back button in action bar
+
+        // showing the back button in action bar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
 
        //  supportActionBar?.hide()
 
@@ -56,28 +66,28 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
         // mainViewModel.getLatestMeals()
         val parentjob= lifecycleScope.launchWhenStarted {
 
-            val catergories=async { mainViewModel._postStateFlow.collect {it->
+            val catergories=async { mainViewModel._postStateFlow.collect { it->
                 when(it){
-                    is ApiState.Loading->{
-                        binding.recyclerCategory.isVisible=false
-                        binding.shimmerCategoryListItems.shimmerCategory .isVisible= true
+                    is ApiState.Loading -> {
+                        binding.recyclerCategory.isVisible = false
+                        binding.shimmerCategoryListItems.shimmerCategory.isVisible = true
                     }
                     is ApiState.Failure -> {
                         binding.recyclerCategory.isVisible = false
-                        binding.shimmerCategoryListItems.shimmerCategory .isVisible= true
+                        binding.shimmerCategoryListItems.shimmerCategory.isVisible = true
                         Log.d("main", "onCreate: ${it.msg}")
                     }
-                    is ApiState.SuccessCategories->{
-                        Log.d("dsfddd","dsfsd");
+                    is ApiState.SuccessCategories -> {
+                        Log.d("dsfddd", "dsfsd");
                         //  binding.shimmerCategory.shimmerCategory .isVisible= true
 
 
                         binding.recyclerCategory.isVisible = true
-                        binding.shimmerCategoryListItems.shimmerCategory .isVisible= false
+                        binding.shimmerCategoryListItems.shimmerCategory.isVisible = false
                         categorySelectAdapter.setData(it.data.categories)
                         categorySelectAdapter.notifyDataSetChanged()
                     }
-                    is ApiState.Empty->{
+                    is ApiState.Empty -> {
 
                     }
                 }
@@ -93,13 +103,17 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
 
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         //return super.onOptionsItemSelected(item)
         return when(item.itemId){
-            R.id.action_addcart->{
+            R.id.action_addcart -> {
+                val intent = Intent(this,CartItemss::class.java);
+                this.startActivity(intent);
 
-                Toast.makeText(applicationContext, "click on setting", Toast.LENGTH_LONG).show()
+
+
                 true
 
             }
@@ -110,12 +124,15 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
         val itemData = menu?.findItem(R.id.action_addcart)
          actionView = itemData?.actionView as CartCounterActionView
         actionView.setItemData(menu, itemData)
-        actionView.setCount(2)
+        database.contactDao().getCount().observe(this@AfterCategorySelectionActivity, {
+            actionView.count = it.toString().toIntOrNull()!!
+        })
+//        actionView.setCount(0)
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.cartmenu,menu)
+        menuInflater.inflate(R.menu.cartmenu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -131,24 +148,26 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
 //    }
 
     private  fun initRecyclerview() {
-        categorySelectAdapter= ListItemsAfterCategorySelectionAdapter(ArrayList(),object :ListItemsAfterCategorySelectionAdapter.onclick{
-            override fun itemclicked(item: Categories.Category) {
-//                if(database.contactDao().getCartItemsCounts()>0)
-//                actionView.count=database.contactDao().getCartItemsCounts()+1
-//                else
-//                    actionView.count=5
-                lifecycle.coroutineScope.launch{
-                 //   database.contactDao().insertCartItem(CartItems(item.getIdCategory(),item.getStrCategory(),item.getStrCategoryDescription(), item.getStrCategoryThumb()))
+        categorySelectAdapter= ListItemsAfterCategorySelectionAdapter(ArrayList(),
+            object : ListItemsAfterCategorySelectionAdapter.onclick {
+                override fun itemclicked(item: Categories.Category) {
+
+
+                    lifecycle.coroutineScope.launch {
+                       // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
+                        database.contactDao().insertCartItem(CartItems(1212, "dd", "ddd", "dddd"))
+
+
+                    }
+                    database.contactDao().getCount().observe(this@AfterCategorySelectionActivity, {
+                        actionView.count = it.toString().toIntOrNull()!!
+                    })
+
 
                 }
 
 
-
-                Toast.makeText(applicationContext, "item should update", Toast.LENGTH_LONG).show()
-            }
-
-
-        })
+            })
         binding.recyclerCategory.apply {
             setHasFixedSize(true)
             layoutManager= LinearLayoutManager(this@AfterCategorySelectionActivity)
