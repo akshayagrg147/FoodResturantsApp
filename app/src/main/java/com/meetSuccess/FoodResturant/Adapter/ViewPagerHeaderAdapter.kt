@@ -1,47 +1,69 @@
 package com.meetSuccess.FoodResturant.Adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
+import com.meetSuccess.FoodResturant.AfterCategorySelectionActivity
+import com.meetSuccess.FoodResturant.Model.Categories
 import com.meetSuccess.FoodResturant.Model.Meals
 import com.meetSuccess.FoodResturant.R
+import com.meetSuccess.FoodResturant.databinding.ItemRecyclerCategoryBinding
+import com.meetSuccess.FoodResturant.databinding.ItemViewPagerHeaderBinding
+import com.squareup.picasso.Picasso
 
-class ViewPagerHeaderAdapter(val meals: List<Meals.Meal>, context: Context): PagerAdapter() {
+class ViewPagerHeaderAdapter(private var categories1: List<Categories.Category>, val context: Context)
+    : RecyclerView.Adapter<ViewPagerHeaderAdapter.PostViewHolder>() {
+
+    private lateinit var binding: ItemViewPagerHeaderBinding
 
 
-    private var context: Context? = null
-
-    override fun getCount(): Int {
-        return meals.size
-    }
-
-    override fun isViewFromObject(view: View, `object`: Any): Boolean {
-        return view == `object`
-    }
-
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-
-        val view: View = LayoutInflater.from(context).inflate(
-            R.layout.item_view_pager_header,
-            container,
-            false
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
+        binding = ItemViewPagerHeaderBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
         )
-        val mealThumb = view.findViewById<ImageView>(R.id.mealThumb)
-        val mealName = view.findViewById<TextView>(R.id.mealName)
-
-        val strMealThumb: String = meals[position].getstrMeal()
-       // Picasso.get().load(strMealThumb).into(mealThumb)
-
-        val strMealName: String = meals.get(position).getstrMeal()
-        mealName.text = strMealName
-
-
-
-        container.addView(view, 0)
-        return super.instantiateItem(container, position)
+        return PostViewHolder(binding.root)
     }
+
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+        binding.mealName.text=categories1.get(position).getStrCategory()
+
+
+        Picasso.get().load(categories1.get(position).getStrCategoryThumb()).placeholder(R.drawable.ic_circle)
+            .into(binding.mealThumb)
+        holder.itemView.setOnClickListener{
+
+
+
+            val intent = Intent(context, AfterCategorySelectionActivity::class.java);
+
+            context.startActivity(intent);
+
+        }
+
+    }
+
+//    override fun getItemCount(): Int = categories1.size
+
+    class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+
+    }
+
+    fun setData(categoriesList: List<Categories.Category>)
+    {
+        categories1=categoriesList
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int {
+        return categories1.size
+
+    }
+
 }

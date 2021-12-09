@@ -2,12 +2,13 @@ package com.meetSuccess.FoodResturant
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.meetSuccess.FoodResturant.Adapter.CategoryAdapter
 import com.meetSuccess.FoodResturant.Adapter.ViewPagerHeaderAdapter
 import com.meetSuccess.FoodResturant.Util.ApiState
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.collect
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var categoryAdapter: CategoryAdapter
-    private lateinit var MealsAdapter: MealsAdapter
+    private lateinit var MealsAdapter:  ViewPagerHeaderAdapter
 
 
     private val mainViewModel:MainViewModel by viewModels()
@@ -29,9 +30,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+
+
        // supportActionBar?.hide()
 
-
+        initRecyclerviewMeals()
         initRecyclerview()
       //  initRecyclerviewMeals()
 
@@ -42,32 +47,26 @@ class MainActivity : AppCompatActivity() {
           val mealsCategory= async { mainViewModel._postStateFlow.collect { it->
               when(it){
                   is ApiState.Loading -> {
-                      binding.viewPagerHeaderRecyclerview.isVisible = true
-                      //  binding.progressBar.isVisible=true
+                      binding.viewPagerHeaderRecyclerview.isVisible = false
+                      binding.shimmerMeal.shimmerViewContainer2.isVisible = true
                   }
                   is ApiState.Failure -> {
                       binding.viewPagerHeaderRecyclerview.isVisible = false
-                        binding.shimmerCategory.shimmerCategory .isVisible= true
+                      binding.shimmerMeal.shimmerViewContainer2.isVisible = true
                       Log.d("main", "onCreate: ${it.msg}")
                   }
-                  is ApiState.SuccessMeals -> {
+                  is ApiState.SuccessCategories -> {
+                      //  binding.shimmerCategory.shimmerCategory .isVisible= true
+
+
                       binding.viewPagerHeaderRecyclerview.isVisible = true
+                      binding.shimmerMeal.shimmerViewContainer2.isVisible = false
+                      MealsAdapter.setData(it.data.categories)
+                      categoryAdapter.notifyDataSetChanged()
+                      binding.viewPagerHeaderRecyclerview.post(Runnable { // Call smooth scroll
+                          binding.viewPagerHeaderRecyclerview.smoothScrollToPosition(it.data.categories.size - 1);
+                      })
 
-                        binding.shimmerCategory.shimmerCategory .isVisible= false
-
-//
-//                      binding.viewPagerHeaderRecyclerview.isVisible = true
-//                      // binding.progressBar.isVisible = false
-//                      MealsAdapter.setData(it.data.meals)
-//                      MealsAdapter.notifyDataSetChanged()
-
-
-                      val headerAdapter = ViewPagerHeaderAdapter(it.data.meals, this@MainActivity)
-                      binding.viewPagerHeaderRecyclerview.setAdapter(headerAdapter)
-                      binding.viewPagerHeaderRecyclerview.setPadding(20, 0, 150, 0)
-                      headerAdapter.notifyDataSetChanged()
-
-                     // headerAdapter.setOnItemClickListener { v, position -> }
 
                   }
                   is ApiState.Empty -> {
@@ -75,27 +74,27 @@ class MainActivity : AppCompatActivity() {
                   }
               }
           } }
-            val catergories=async { mainViewModel._postStateFlow.collect {it->
+            val catergories=async { mainViewModel._postStateFlow.collect { it->
                 when(it){
-                    is ApiState.Loading->{
-                        binding.recyclerCategory.isVisible=false
-                        binding.shimmerCategory.shimmerCategory .isVisible= true
+                    is ApiState.Loading -> {
+                        binding.recyclerCategory.isVisible = false
+                        binding.shimmerCategory.shimmerCategory.isVisible = true
                     }
                     is ApiState.Failure -> {
                         binding.recyclerCategory.isVisible = false
-                          binding.shimmerCategory.shimmerCategory .isVisible= true
+                        binding.shimmerCategory.shimmerCategory.isVisible = true
                         Log.d("main", "onCreate: ${it.msg}")
                     }
-                    is ApiState.SuccessCategories->{
+                    is ApiState.SuccessCategories -> {
                         //  binding.shimmerCategory.shimmerCategory .isVisible= true
 
 
                         binding.recyclerCategory.isVisible = true
-                        binding.shimmerCategory.shimmerCategory .isVisible= false
+                        binding.shimmerCategory.shimmerCategory.isVisible = false
                         categoryAdapter.setData(it.data.categories)
                         categoryAdapter.notifyDataSetChanged()
                     }
-                    is ApiState.Empty->{
+                    is ApiState.Empty -> {
 
                     }
                 }
@@ -111,17 +110,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 //
-//    private fun initRecyclerviewMeals() {
-//        MealsAdapter= MealsAdapter(ArrayList())
-//        binding.viewPagerHeaderRecyclerview.apply {
-//            setHasFixedSize(true)
-//            layoutManager=GridLayoutManager(this@MainActivity, 3)
-//            adapter=categoryAdapter
-//        }
-//    }
+    private fun initRecyclerviewMeals() {
+        MealsAdapter= ViewPagerHeaderAdapter(ArrayList(), this)
+        binding.viewPagerHeaderRecyclerview.apply {
+            setHasFixedSize(true)
+            layoutManager= StaggeredGridLayoutManager(1, LinearLayoutManager.HORIZONTAL)
+            adapter=MealsAdapter
+
+        }
+    }
 
     private fun initRecyclerview() {
-        categoryAdapter= CategoryAdapter(ArrayList(),this)
+        categoryAdapter= CategoryAdapter(ArrayList(), this)
         binding.recyclerCategory.apply {
             setHasFixedSize(true)
             layoutManager=GridLayoutManager(this@MainActivity, 3)

@@ -24,8 +24,8 @@
             <ImageView
                 android:id="@+id/image"
                 android:src="@drawable/sample_image_category"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
 
                 />
             <TextView
@@ -77,6 +77,7 @@
         </LinearLayout>
         <LinearLayout
             android:id="@+id/cartButtons"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
