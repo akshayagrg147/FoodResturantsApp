@@ -36,7 +36,7 @@ class CartItemss :  AppCompatActivity() {
                     categorySelectAdapter= CartItemssAdapter(it)
 
                     binding.recyclerCategory.isVisible = true
-                    binding.shimmerCategoryListItems.shimmerCategory.isVisible = false
+                  //  binding.shimmerCategoryListItems.shimmerCategory.isVisible = false
 
                     binding.recyclerCategory.apply {
                         setHasFixedSize(true)
