@@ -154,8 +154,11 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
 
 
                     lifecycle.coroutineScope.launch {
-                       // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
-                        database.contactDao().insertCartItem(CartItems(1212, "dd", "ddd", "dddd"))
+                      // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
+                        val intger:Int=database.contactDao().getProductBasedIdCount("121212")
+                        database.contactDao().insertCartItem(CartItems( "121212", "ddd", intger+1,"dddd"))
+                        Log.d("countis",database.contactDao().getProductBasedIdCount("121212").toString())
+
 
 
                     }

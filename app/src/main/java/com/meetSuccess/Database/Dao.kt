@@ -18,6 +18,6 @@ interface Dao {
      fun getCount(): LiveData<Int>
     @Query("SELECT * FROM CartItems")
     fun getContact():LiveData<List<CartItems>>
-//    @Query("SELECT ItemCount FROM CartItems where id=:idd")
-//    fun getProductBasedId( idd:Long):LiveData<Int>
+    @Query("SELECT totalCount FROM CartItems where ProductIdNumber=:ProductIdNumber")
+    fun getProductBasedIdCount( ProductIdNumber:String):Int
 }
