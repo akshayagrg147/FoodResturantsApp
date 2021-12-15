@@ -1,5 +1,7 @@
 package com.meetSuccess.FoodResturant
 
+import android.content.Intent
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -29,7 +31,33 @@ class CartItemss :  AppCompatActivity() {
         database= ProductDatabase.getInstance(this@CartItemss)
         val actionBar: ActionBar? = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
-       // initRecyclerview()
+        binding.replyTextview.setOnClickListener {
+
+            database.contactDao().getAllAddress().observe(this@CartItemss,{
+                if((it!=null)&&(it.size>0))
+                    {
+                        val intent = Intent(this,ProceedToAddress::class.java);
+                        this.startActivity(intent);
+
+                    }
+                else
+                {
+                    val intent = Intent(this,AddNewAddressActivity::class.java);
+                    this.startActivity(intent);
+                }
+
+            }
+            )
+        }
+        // initRecyclerview()
+        database.contactDao().getTotalProductItems().observe(this@CartItemss,{
+           binding.totalquantity.text=it.toString()
+        })
+        database.contactDao().getTotalPrice().observe(this@CartItemss,{
+            if(it!=null)
+            binding.priceAmount.text="₹"+it.toString()
+
+        })
 
 
                 database.contactDao().getContact().observe(this@CartItemss,{
@@ -48,6 +76,10 @@ class CartItemss :  AppCompatActivity() {
 
 
 
+    }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
 

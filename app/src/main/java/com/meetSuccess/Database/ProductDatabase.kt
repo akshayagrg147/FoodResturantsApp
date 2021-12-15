@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 
 
-@Database(entities = [CartItems::class],version = 2,exportSchema = true)
+@Database(entities = [CartItems::class,AddressItems::class],version = 2,exportSchema = true)
 abstract class ProductDatabase:RoomDatabase(){
     abstract fun contactDao(): com.meetSuccess.Database.Dao
     companion object{

@@ -27,7 +27,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
-                android:background="@color/colorPrimary" />
+                android:background="@color/deep_orange" />
 
             <TextView
                 android:id="@+id/title"
@@ -49,7 +49,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="15dp"
-                app:cardBackgroundColor="@color/colorPrimaryDark"
+                app:cardBackgroundColor="@color/deep_orange"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp">
                 <TextView
@@ -100,7 +100,8 @@
                 android:id="@+id/titleCategory"
                 android:text="Meal Categories"
                 android:textSize="19sp"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/deep_orange"
+
                 android:textStyle="bold"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"

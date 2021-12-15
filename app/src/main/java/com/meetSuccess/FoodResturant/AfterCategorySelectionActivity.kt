@@ -6,8 +6,12 @@ package com.meetSuccess.FoodResturant
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.meetSuccess.Database.CartItems
 import com.meetSuccess.Database.ProductDatabase
 import com.meetSuccess.FoodResturant.Adapter.ListItemsAfterCategorySelectionAdapter
@@ -47,15 +52,11 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
         binding= ActivityListItemAfterCategorySelectionBinding.inflate(layoutInflater)
         setContentView(binding.root)
         database= ProductDatabase.getInstance(this@AfterCategorySelectionActivity)
+
         val actionBar: ActionBar? = supportActionBar
-
-        // showing the back button in action bar
-
-        // showing the back button in action bar
         actionBar?.setDisplayHomeAsUpEnabled(true)
-
-
-       //  supportActionBar?.hide()
+        actionBar?.setHomeButtonEnabled(true)
+        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
 
 
         initRecyclerview()
@@ -124,7 +125,7 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
         val itemData = menu?.findItem(R.id.action_addcart)
          actionView = itemData?.actionView as CartCounterActionView
         actionView.setItemData(menu, itemData)
-        database.contactDao().getCount().observe(this@AfterCategorySelectionActivity, {
+        database.contactDao().getTotalProductItems().observe(this@AfterCategorySelectionActivity, {
             actionView.count = it.toString().toIntOrNull()!!
         })
 //        actionView.setCount(0)
@@ -148,34 +149,67 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
 //    }
 
     private  fun initRecyclerview() {
-        categorySelectAdapter= ListItemsAfterCategorySelectionAdapter(ArrayList(),
+        categorySelectAdapter= ListItemsAfterCategorySelectionAdapter(baseContext, ArrayList(),
             object : ListItemsAfterCategorySelectionAdapter.onclick {
                 override fun itemclicked(item: Categories.Category) {
 
 
                     lifecycle.coroutineScope.launch {
-                      // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
-                        val intger:Int=database.contactDao().getProductBasedIdCount("121212")
-                        database.contactDao().insertCartItem(CartItems( "121212", "ddd", intger+1,"dddd"))
-                        Log.d("countis",database.contactDao().getProductBasedIdCount("121212").toString())
-
+                        // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
+                        val intger: Int = database.contactDao().getProductBasedIdCount("121212")
+                        database.contactDao()
+                            .insertCartItem(CartItems("121212", item.getStrCategoryThumb(), intger + 1, 12, "dddd"))
+//                        Log.d("countis",database.contactDao().getProductBasedIdCount("121212").toString())
 
 
                     }
-                    database.contactDao().getCount().observe(this@AfterCategorySelectionActivity, {
-                        actionView.count = it.toString().toIntOrNull()!!
-                    })
+                    database.contactDao().getTotalProductItems()
+                        .observe(this@AfterCategorySelectionActivity, {
+                            actionView.count = it.toString().toIntOrNull()!!
+                        })
+                    val dialog = BottomSheetDialog(this@AfterCategorySelectionActivity)
+
+                    val inflater = LayoutInflater.from(this@AfterCategorySelectionActivity)
+                    val view = inflater.inflate(R.layout.bottom_sheet_dialog, null)
+                    view.findViewById<TextView>(R.id.idTVCourseName).setText(item.getStrCategory())
+                    view.findViewById<Button>(R.id.idBtnProceed).setOnClickListener {
+                        database.contactDao().getAllAddress()
+                            .observe(this@AfterCategorySelectionActivity, {
+                                if ((it != null) && (it.size > 0)) {
+                                    val intent = Intent(
+                                        this@AfterCategorySelectionActivity,
+                                        ProceedToAddress::class.java
+                                    );
+                                    this@AfterCategorySelectionActivity.startActivity(intent);
+
+                                } else {
+                                    val intent = Intent(
+                                        this@AfterCategorySelectionActivity,
+                                        AddNewAddressActivity::class.java
+                                    );
+                                    this@AfterCategorySelectionActivity.startActivity(intent);
+                                }
+                            })
+                    }
+                        //  dialog.setCancelable(false)
+                        dialog.setContentView(view)
+                        dialog.show()
+
 
 
                 }
 
 
-            })
+                })
         binding.recyclerCategory.apply {
             setHasFixedSize(true)
             layoutManager= LinearLayoutManager(this@AfterCategorySelectionActivity)
             adapter=categorySelectAdapter
         }
+    }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
 }

@@ -10,4 +10,9 @@
     <string name="youtube">YOUTUBE</string>
     <string name="source">SOURCE</string>
     <string name="favorite">Favorite</string>
+    <string name="flat_house_no_building_company_apartment">Flat,House no.,Building ,Company,Apartment</string>
+    <string name="enter_pin_code">Enter Pin Code</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="area_colony_street_sector_village">Area,Colony,Street,Sector,Village</string>
 </resources>

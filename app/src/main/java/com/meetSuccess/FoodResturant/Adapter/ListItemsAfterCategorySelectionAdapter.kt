@@ -1,19 +1,25 @@
 package com.meetSuccess.FoodResturant.Adapter
 
+
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.meetSuccess.FoodResturant.Model.Categories
-
-
+import com.meetSuccess.FoodResturant.R
 import com.meetSuccess.FoodResturant.databinding.ItemproductCategoryBinding
-import com.squareup.picasso.Picasso
 
 
-class ListItemsAfterCategorySelectionAdapter(private var categories1: List<Categories.Category>,
-                                             onitemClicked1: ListItemsAfterCategorySelectionAdapter.onclick
+class ListItemsAfterCategorySelectionAdapter(
+    private var cntx: Context, private var categories1: List<Categories.Category>,
+    onitemClicked1: ListItemsAfterCategorySelectionAdapter.onclick
 )
     : RecyclerView.Adapter<ListItemsAfterCategorySelectionAdapter.PostViewHolder>() {
 
@@ -29,21 +35,19 @@ class ListItemsAfterCategorySelectionAdapter(private var categories1: List<Categ
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-//        holder.itemView.setOnClickListener{
-//            Log.d("callingTest","ddddddd--item"+position)
-//
-//
-//        }
+        holder.itemView.findViewById<TextView>(R.id.address).setText(categories1.get(position).getStrCategory())
 
 
+        holder.itemView.findViewById<Button>(R.id.AddButton).setOnClickListener{
 
-        binding.AddButton.setOnClickListener{
-//            Log.d("callingTest","ddddddd--button"+position)
-//binding.ItemAdded.visibility=View.GONE
-//            binding.AddButton.visibility=View.GONE
-            Log.d("callingTest","ddddddd--button"+position)
+            holder.itemView.findViewById<Button>(R.id.AddButton).visibility=View.GONE
+            holder.itemView.findViewById<Button>(R.id.ItemAdded).visibility=View.VISIBLE
+            Log.d("callingTest", "ddddddd--button" + position)
             onitemClicked.itemclicked(categories1.get(position))
-        }
+
+   };
+
+
 //        binding.categoryName.text=categories1.get(position).getStrCategory()
 //
 //        Picasso.get().load(categories1.get(position).getStrCategoryThumb()).placeholder(R.drawable.ic_circle)
@@ -55,6 +59,7 @@ class ListItemsAfterCategorySelectionAdapter(private var categories1: List<Categ
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
+
     }
 
     fun setData(categoriesList: List<Categories.Category>)
@@ -64,12 +69,12 @@ class ListItemsAfterCategorySelectionAdapter(private var categories1: List<Categ
     }
 
     override fun getItemCount(): Int {
-      Log.d("calllllllll",categories1.size.toString());
+
         return categories1.size
 
     }
     interface onclick{
-        public fun itemclicked(item:Categories.Category)
+        public fun itemclicked(item: Categories.Category)
     }
 
 }

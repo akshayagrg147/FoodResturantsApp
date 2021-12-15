@@ -13,40 +13,40 @@ data class Categories(
 
     data class Category(
         @SerializedName("idCategory")
-        private val idCategory: String? = null,
+        private val idCategory: String,
         @SerializedName("strCategory")
-        private val strCategory: String? = null,
+        private val strCategory: String,
 
         @SerializedName("strCategoryThumb")
-        private val strCategoryThumb: String? = null,
+        private val strCategoryThumb: String ,
 
         @SerializedName("strCategoryDescription")
-        private var strCategoryDescription: String? = null
+        private var strCategoryDescription: String
     )
     {
-        fun getIdCategory(): String? {
+        fun getIdCategory(): String {
             return idCategory
         }
 
 
 
-        fun getStrCategory(): String? {
+        fun getStrCategory(): String {
             return strCategory
         }
 
 
 
-        fun getStrCategoryThumb(): String? {
+        fun getStrCategoryThumb(): String {
             return strCategoryThumb
         }
 
 
 
-        fun getStrCategoryDescription(): String? {
+        fun getStrCategoryDescription(): String {
             return strCategoryDescription
         }
 
-        fun setStrCategoryDescription(strCategoryDescription: String?) {
+        fun setStrCategoryDescription(strCategoryDescription: String) {
             this.strCategoryDescription = strCategoryDescription
         }
     }

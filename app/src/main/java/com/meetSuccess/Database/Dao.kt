@@ -12,10 +12,16 @@ interface Dao {
    suspend fun deleteCartItem(contact: CartItems)
     @Update
    suspend fun updateCartItem(contact: CartItems)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAddressItem(address: AddressItems)
+    @Query("SELECT * FROM AddressItems")
+    fun getAllAddress():LiveData<List<AddressItems>>
 
+    @Query("SELECT SUM(productPrice) FROM CartItems")
+    fun getTotalPrice():LiveData<Int>
 
   @Query("SELECT COUNT(*) FROM CartItems")
-     fun getCount(): LiveData<Int>
+     fun getTotalProductItems(): LiveData<Int>
     @Query("SELECT * FROM CartItems")
     fun getContact():LiveData<List<CartItems>>
     @Query("SELECT totalCount FROM CartItems where ProductIdNumber=:ProductIdNumber")
