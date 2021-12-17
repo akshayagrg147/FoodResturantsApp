@@ -99,10 +99,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/minusButton"
                         android:text="-"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/plusButton"
                         android:layout_marginStart="10dp"
                         android:text="+"
                         android:layout_width="wrap_content"

@@ -41,4 +41,5 @@ class MealsAdapter(private var categories1: List<Meals.Meal>)
 
     }
 
+
 }

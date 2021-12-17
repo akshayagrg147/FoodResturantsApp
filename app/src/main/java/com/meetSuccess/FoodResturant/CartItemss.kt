@@ -1,26 +1,22 @@
 package com.meetSuccess.FoodResturant
 
 import android.content.Intent
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.core.view.isVisible
 import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.meetSuccess.Database.CartItems
 import com.meetSuccess.Database.ProductDatabase
-import com.meetSuccess.FoodResturant.Adapter.ListItemsAfterCategorySelectionAdapter
-import com.meetSuccess.FoodResturant.Model.Categories
 import com.meetSuccess.FoodResturant.databinding.ActivityCartItemssBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+
 @AndroidEntryPoint
-class CartItemss :  AppCompatActivity() {
+class CartItemss :  AppCompatActivity(),CartItemssAdapter.cartItemClickListner {
     private lateinit var binding: ActivityCartItemssBinding
     lateinit var database: ProductDatabase
     private lateinit var categorySelectAdapter: CartItemssAdapter
@@ -51,17 +47,23 @@ class CartItemss :  AppCompatActivity() {
         }
         // initRecyclerview()
         database.contactDao().getTotalProductItems().observe(this@CartItemss,{
-           binding.totalquantity.text=it.toString()
+           binding.totalquantity.setText(it.toString())
+            if( it==0) {
+                binding.emptyLayout.visibility = View.VISIBLE
+                binding.linearlayout.visibility=View.GONE
+                binding.linearLayoutButton.visibility=View.GONE
+
+            }
         })
         database.contactDao().getTotalPrice().observe(this@CartItemss,{
             if(it!=null)
-            binding.priceAmount.text="₹"+it.toString()
+            binding.priceAmount.setText("₹"+it.toString())
 
         })
 
 
                 database.contactDao().getContact().observe(this@CartItemss,{
-                    categorySelectAdapter= CartItemssAdapter(it)
+                    categorySelectAdapter= CartItemssAdapter(it,this,database)
 
                     binding.recyclerCategory.isVisible = true
                   //  binding.shimmerCategoryListItems.shimmerCategory.isVisible = false
@@ -82,11 +84,19 @@ class CartItemss :  AppCompatActivity() {
         return true
     }
 
+    override fun ClickedPlusButton(cartitems: CartItems) {
+        lifecycle.coroutineScope.launch {
+            // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
+
+            val intger: Int = database.contactDao().getProductBasedIdCount(cartitems.ProductIdNumber)
+            database.contactDao()
+                .insertCartItem(CartItems(cartitems.ProductIdNumber, cartitems.strCategoryThumb, intger + 1, 12, "dddd"))
+                       Log.d("coundddtis",database.contactDao().getProductBasedIdCount(cartitems.ProductIdNumber).toString())
 
 
+        }
 
-
-
+    }
 
 
 }
