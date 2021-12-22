@@ -44,6 +44,7 @@ class CartItemssAdapter(private var categories1: List<CartItems>,cartItemClickLi
         binding.minusButton.findViewById<AppCompatButton>(R.id.minusButton).setOnClickListener{
 //            totalNumber=totalNumber-1
 //            binding.totalquantity.text=totalNumber.toString()
+            itemclickListner.ClickedMinusButton(categories1.get(position))
 
         }
 
@@ -61,6 +62,7 @@ class CartItemssAdapter(private var categories1: List<CartItems>,cartItemClickLi
     }
     public interface cartItemClickListner{
         fun  ClickedPlusButton(cartitems: CartItems)
+        fun  ClickedMinusButton(cartitems: CartItems)
 
     }
 

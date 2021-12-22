@@ -3,7 +3,7 @@
     package="com.meetSuccess.FoodResturant">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".di.BaseApp"
@@ -13,12 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Demo">
-        <activity android:name=".ProceedToAddress"></activity>
-        <activity android:name=".AddNewAddressActivity" android:label="Add New Address" />
-        <activity android:name=".CartItemss" android:label="cart Items"/>
-        <activity android:name=".AfterCategorySelectionActivity"  android:label="Product List" />
+        <activity android:name=".SignUpOtp"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+        </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".OrderPlaced"
+            android:label="Order Placed" />
+        <activity
+            android:name=".SplashScreenActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +29,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ProceedToAddress"
+            android:label="Confirm Address" />
+        <activity
+            android:name=".AddNewAddressActivity"
+            android:label="Add New Address" />
+        <activity
+            android:name=".CartItemss"
+            android:label="cart Items" />
+        <activity
+            android:name=".AfterCategorySelectionActivity"
+            android:label="Product List" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
     </application>
 
 </manifest>

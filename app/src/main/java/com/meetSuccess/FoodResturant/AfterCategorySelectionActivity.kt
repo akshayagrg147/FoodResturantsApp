@@ -9,8 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
@@ -40,6 +40,7 @@ import kotlin.collections.ArrayList
 class AfterCategorySelectionActivity :  AppCompatActivity() {
     private lateinit var binding: ActivityListItemAfterCategorySelectionBinding
     lateinit var database: ProductDatabase
+    var categoryAdapter: CustomYearSpinnerAdaptor? = null
 
     private lateinit var categorySelectAdapter: ListItemsAfterCategorySelectionAdapter
     private  lateinit var actionView:CartCounterActionView
@@ -50,6 +51,19 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityListItemAfterCategorySelectionBinding.inflate(layoutInflater)
+
+
+val categories:ArrayList<String> =ArrayList<String>()
+        categories.add("hii")
+        val dataAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+//        categoryAdapter =
+//            CustomYearSpinnerAdaptor(
+//                this@AfterCategorySelectionActivity,
+//                android.R.layout.simple_spinner_item,
+//                categories
+//            )
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerStatus.setAdapter(dataAdapter)
         setContentView(binding.root)
         database= ProductDatabase.getInstance(this@AfterCategorySelectionActivity)
 
@@ -85,8 +99,9 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
 
                         binding.recyclerCategory.isVisible = true
                         binding.shimmerCategoryListItems.shimmerCategory.isVisible = false
+                        //  it.data.categories.filter{it.getIdCategory().contentEquals("")}
                         categorySelectAdapter.setData(it.data.categories)
-                        categorySelectAdapter.notifyDataSetChanged()
+                        // categorySelectAdapter.notifyDataSetChanged()
                     }
                     is ApiState.Empty -> {
 
@@ -110,7 +125,7 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
         //return super.onOptionsItemSelected(item)
         return when(item.itemId){
             R.id.action_addcart -> {
-                val intent = Intent(this,CartItemss::class.java);
+                val intent = Intent(this, CartItemss::class.java);
                 this.startActivity(intent);
 
 
@@ -126,7 +141,10 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
          actionView = itemData?.actionView as CartCounterActionView
         actionView.setItemData(menu, itemData)
         database.contactDao().getTotalProductItems().observe(this@AfterCategorySelectionActivity, {
-            actionView.count = it.toString().toIntOrNull()!!
+            if (it != null)
+                actionView.count = it.toString().toIntOrNull()!!
+            else
+                actionView.count = 0
         })
 //        actionView.setCount(0)
         return super.onPrepareOptionsMenu(menu)
@@ -157,15 +175,32 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
                     lifecycle.coroutineScope.launch {
                         // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
                         val intger: Int = database.contactDao().getProductBasedIdCount("121212")
-                        database.contactDao()
-                            .insertCartItem(CartItems("121212", item.getStrCategoryThumb(), intger + 1, 12, "dddd"))
+                        if (intger == 0) {
+                            database.contactDao()
+                                .insertCartItem(
+                                    CartItems(
+                                        "121212",
+                                        item.getStrCategoryThumb(),
+                                        intger + 1,
+                                        12,
+                                        "dddd"
+                                    )
+                                )
+
+                        } else if (intger >= 1) {
+
+                            database.contactDao()
+                                .updateCartItem(intger + 1, "121212")
+                        }
+
 //                        Log.d("countis",database.contactDao().getProductBasedIdCount("121212").toString())
 
 
                     }
                     database.contactDao().getTotalProductItems()
                         .observe(this@AfterCategorySelectionActivity, {
-                            actionView.count = it.toString().toIntOrNull()!!
+                            if (it != null)
+                                actionView.count = it.toString().toIntOrNull()!!
                         })
                     val dialog = BottomSheetDialog(this@AfterCategorySelectionActivity)
 
@@ -191,16 +226,15 @@ class AfterCategorySelectionActivity :  AppCompatActivity() {
                                 }
                             })
                     }
-                        //  dialog.setCancelable(false)
-                        dialog.setContentView(view)
-                        dialog.show()
-
+                    //  dialog.setCancelable(false)
+                    dialog.setContentView(view)
+                    dialog.show()
 
 
                 }
 
 
-                })
+            })
         binding.recyclerCategory.apply {
             setHasFixedSize(true)
             layoutManager= LinearLayoutManager(this@AfterCategorySelectionActivity)

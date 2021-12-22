@@ -47,12 +47,16 @@ class CartItemss :  AppCompatActivity(),CartItemssAdapter.cartItemClickListner {
         }
         // initRecyclerview()
         database.contactDao().getTotalProductItems().observe(this@CartItemss,{
-           binding.totalquantity.setText(it.toString())
-            if( it==0) {
-                binding.emptyLayout.visibility = View.VISIBLE
-                binding.linearlayout.visibility=View.GONE
-                binding.linearLayoutButton.visibility=View.GONE
+            if(it!=null) {
+                binding.totalquantity.setText(it.toString())
+                if (it <= 0) {
+                    binding.recyclerCategory.visibility = View.GONE
+                    binding.emptyLayout.visibility = View.VISIBLE
+                    binding.linearlayout.visibility = View.GONE
+                    binding.linearLayoutButton.visibility = View.GONE
 
+
+                }
             }
         })
         database.contactDao().getTotalPrice().observe(this@CartItemss,{
@@ -65,7 +69,7 @@ class CartItemss :  AppCompatActivity(),CartItemssAdapter.cartItemClickListner {
                 database.contactDao().getContact().observe(this@CartItemss,{
                     categorySelectAdapter= CartItemssAdapter(it,this,database)
 
-                    binding.recyclerCategory.isVisible = true
+                  //  binding.recyclerCategory.isVisible = true
                   //  binding.shimmerCategoryListItems.shimmerCategory.isVisible = false
 
                     binding.recyclerCategory.apply {
@@ -90,12 +94,46 @@ class CartItemss :  AppCompatActivity(),CartItemssAdapter.cartItemClickListner {
 
             val intger: Int = database.contactDao().getProductBasedIdCount(cartitems.ProductIdNumber)
             database.contactDao()
-                .insertCartItem(CartItems(cartitems.ProductIdNumber, cartitems.strCategoryThumb, intger + 1, 12, "dddd"))
-                       Log.d("coundddtis",database.contactDao().getProductBasedIdCount(cartitems.ProductIdNumber).toString())
+                .updateCartItem(intger+1,cartitems.ProductIdNumber)
+
+                       Log.d("coundddtis",cartitems.ProductIdNumber+"--"+cartitems.strCategoryThumb+"--"+"--"+intger+"--"+database.contactDao().getProductBasedIdCount(cartitems.ProductIdNumber).toString())
 
 
         }
 
+    }
+
+    override fun ClickedMinusButton(cartitems: CartItems) {
+        lifecycle.coroutineScope.launch {
+            // database.contactDao().getProductBasedId(1212).observe(this@AfterCategorySelectionActivity,{})
+
+            var intger: Int = database.contactDao().getProductBasedIdCount(cartitems.ProductIdNumber)
+
+            intger=intger - 1
+            Log.d("coundddtis",
+                cartitems.ProductIdNumber + "--" + cartitems.strCategoryThumb + "--" + "--" + intger + "--" + database.contactDao()
+                    .getProductBasedIdCount(cartitems.ProductIdNumber).toString()
+            )
+            if(intger>=1) {
+                database.contactDao()
+                    .updateCartItem(intger, cartitems.ProductIdNumber)
+
+
+
+
+            }
+            else if(intger==0)
+            {
+                database.contactDao()
+                    .deleteCartItem(cartitems.ProductIdNumber)
+                binding.linearlayout.visibility = View.GONE
+                binding.linearLayoutButton.visibility = View.GONE
+                binding.emptyLayout.visibility = View.VISIBLE
+
+              //  binding.recyclerCategory.visibility = View.GONE
+                categorySelectAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
 

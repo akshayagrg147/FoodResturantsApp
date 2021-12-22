@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "376504727383",
+    "project_id": "ecommerce-e29c1",
+    "storage_bucket": "ecommerce-e29c1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376504727383:android:befe0e2bbb5df1c2a0f012",
+        "android_client_info": {
+          "package_name": "com.meetSuccess.FoodResturant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376504727383-7itpppt00ae63n9vcifo2e8uv7uemdd0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meetSuccess.FoodResturant",
+            "certificate_hash": "393b2591f5f50b2bfaec7354683fd53c9efed22b"
+          }
+        },
+        {
+          "client_id": "376504727383-tnpoorqh1j6qe20c6fu7eqfgj3uktbks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-WLln-_MTfW2WYa-HweDQhzjjSEdGhAU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376504727383-tnpoorqh1j6qe20c6fu7eqfgj3uktbks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
